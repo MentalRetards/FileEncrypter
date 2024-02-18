@@ -8,6 +8,7 @@ using namespace std;
 void process(ifstream* in, ostream* out, unsigned long long* remaining, bool enc);
 void encrypt(char* buffer, int bufferSize);
 void decrypt(char* buffer, int bufferSize);
+bool endsWith(string str1, string str2);
 unsigned int getIntFromStr(string* str);
 void encryptMode(ifstream* in, string* path);
 void decryptMode(ifstream* in, string* path);
@@ -89,7 +90,7 @@ void decryptMode(ifstream* in, string* path) {
 
     //remove file extension
     string fileName = *path;
-    if (fileName.ends_with(extension)) fileName = fileName.substr(0, fileName.length() - extension.length());
+    if (endsWith(fileName, extension)) fileName = fileName.substr(0, fileName.length() - extension.length());
 
     ofstream outFile(fileName, ios::binary);
 
@@ -109,6 +110,7 @@ void decryptMode(ifstream* in, string* path) {
 
 void process(ifstream* in, ostream* out, unsigned long long* remaining, bool enc) {
     int arraySize = min((long) maxBufferLengthMb * (long) mb2Byte, (long) *remaining);
+    Util::print(to_string(arraySize));
     //if (arraySize == -1) return;
     char* buffer = new char[arraySize] {};
     in->read(buffer, arraySize);
@@ -141,4 +143,10 @@ unsigned int getIntFromStr(string* str) {
         sum += c;
     }
     return sum;
+}
+
+//string.ends_swith stopped working for some reason so I had to do this
+bool endsWith(string str1, string str2) {
+    str1 = str1.substr(str1.length() - str2.length());
+    return str1 == str2;
 }
